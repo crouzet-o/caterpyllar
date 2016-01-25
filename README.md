@@ -22,9 +22,9 @@ process.
 
 ### TODO list
 
-*. Introduce classes and methods instead of functions;
-*. Define visual interfaces with specific needs;
-*. Design and introduce XML config file interpretation in cooperation with csv
-   lists;
+* Introduce classes and methods instead of functions;
+* Define visual interfaces with specific needs;
+* Design and introduce XML config file interpretation in cooperation with csv
+  lists;
 
 
