@@ -19,3 +19,12 @@ some classical needs in human experimentation interfaces (specifically for
 studying speech production and perception) which should ease the development
 process.
 
+
+### TODO list
+
+*. Introduce classes and methods instead of functions;
+*. Define visual interfaces with specific needs;
+*. Design and introduce XML config file interpretation in cooperation with csv
+   lists;
+
+
