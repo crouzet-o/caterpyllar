@@ -112,7 +112,7 @@ def uconvert(string):
     return ustring
 
 
-def read_data_2D(filepath, sep, header):
+def read_data_2D(filepath, sep, header, dropg = False):
     """ Function to load the contents of a text file into a 2D table using "sep"
     as a column separator. This function returns the content of the
     file into a 2D table (list of lists) which may be accessed by "
@@ -130,8 +130,9 @@ def read_data_2D(filepath, sep, header):
                                       # This keeps \n at end of line 
         cleandata = string.replace(line,'\n','') # Remove \n at end of line
                                           # (from string.replace)
-        cleandata = string.replace(cleandata,'\"','')
-        cleandata = string.replace(cleandata,'\'','')
+        if (dropg == True):
+            cleandata = string.replace(cleandata,'\"','')
+            cleandata = string.replace(cleandata,'\'','')
         oneline = re.split(sep,cleandata) # Split file at commas
         table.append(oneline) # Append the line at end of table
     datafile.close() # Close the file
