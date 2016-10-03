@@ -27,5 +27,5 @@ should ease the development process.
 * Define visual interfaces with specific needs;
 * Design and introduce XML config file interpretation in cooperation with csv
   lists;
-
+* Deal more adequately with local / global variables.
 
