@@ -26,5 +26,6 @@ process.
 * Define visual interfaces with specific needs;
 * Design and introduce XML config file interpretation in cooperation with csv
   lists;
+* Deal with management of local ./ global variables
 
 
