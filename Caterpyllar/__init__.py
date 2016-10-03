@@ -29,7 +29,7 @@ import codecs
 
 # Initialisation de l'affichage
 black=(0,0,0)
-white=(255,255,255)
+white=(250,250,250)
 red=(255,0,0)
 green=(0,255,0)
 bgcolor=white
