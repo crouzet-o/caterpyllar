@@ -66,7 +66,7 @@ version = '0.0.3'
 ## General functions
 
 def sayhi():
-    print 'Hi, this is',__name__,'speaking.'
+    print('Hi, this is',__name__,'speaking.')
 
 
 
@@ -517,12 +517,12 @@ def display_matrice_3_7(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u): # Usage : di
     blank_screen()
     xpositions=[1*scipy.ones(7),3*scipy.ones(7),5*scipy.ones(7)] # 1,3,5 = 3 colonnes (indicées 1,3,5)
     ypositions=[range(1,14,2),range(1,14,2),range(1,14,2)] # 7 lignes indicées 1,3,5,7,9,11,13 (centre)
-    zones = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
-    #print largeur_ecran,hauteur_ecran,xpositions,ypositions
+    zones = [[0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0]]
+    #print(largeur_ecran, hauteur_ecran, xpositions, ypositions)
     for i in range(0,3,1):
         for j in range(0,7,1):
-            place_texte_xy(strings[i][j],textsize,int(xpositions[i][j]*largeur_ecran/6),int(ypositions[i][j]*hauteur_ecran/14))
-            #print int(xpositions[i][j]*largeur_ecran/6),int(ypositions[i][j]*hauteur_ecran/14)
+            place_texte_xy(strings[i][j], textsize, int(xpositions[i][j] * largeur_ecran / 6), int(ypositions[i][j] * hauteur_ecran / 14))
+            #print(int(xpositions[i][j] * largeur_ecran/6), int(ypositions[i][j] * hauteur_ecran/14))
 
 
 def display_2AFC(gauche,droite):
@@ -532,11 +532,11 @@ def display_2AFC(gauche,droite):
     xpositions=[1,3] # 1,3 = 2 colonnes (indicées 1,3)
     ypositions=[1,1] # 2 lignes centrées
     zones = [0,0]
-    #print largeur_ecran,hauteur_ecran,xpositions,ypositions
+    #print(largeur_ecran, hauteur_ecran, xpositions, ypositions)
     for i in range(0,2,1):
         for j in range(0,1,1):
-            place_texte_xy(strings[i],textsize,int(xpositions[i]*largeur_ecran/4),int(ypositions[i]*hauteur_ecran/2))
-            #print int(xpositions[i][j]*largeur_ecran/6),int(ypositions[i][j]*hauteur_ecran/14)
+            place_texte_xy(strings[i], textsize, int(xpositions[i] * largeur_ecran / 4), int(ypositions[i] * hauteur_ecran / 2))
+            #print(int(xpositions[i][j] * largeur_ecran / 6), int(ypositions[i][j] *hauteur_ecran/14))
 
 
 def getanswerfrom_2AFC(x,y,responsematrix):
@@ -579,7 +579,7 @@ def display_response_scale(levels):
         confidence_level = i
         #segmentstartx = int(largeur_ecran-(largeur_ecran/(levels+1)*i))
         segmentstartx = int((largeur_ecran/(levels+1)*i))
-        #print confidence_level
+        #print(confidence_level)
         segmentendx = segmentstartx
         pygame.draw.line(window,fgcolor,(segmentstartx,segmentstarty),(segmentendx,segmentendy),linewidth)
         place_texte_xy(str(i),refsize,segmentstartx,segmentstarty+2*segmentlength)
@@ -716,7 +716,7 @@ def catchmouse():
     pygame.event.wait() # Wait for an event
     if pygame.mouse.get_pressed(): # If a mouse button is pressed
         (x,y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
-            ##print (x,y); # Print these coordinates on the output
+            ##print((x,y)); # Print these coordinates on the output
         button = pygame.mouse.get_pressed()
         return x,y,button
     pygame.event.set_allowed([MOUSEMOTION,MOUSEBUTTONUP,MOUSEBUTTONDOWN,KEYDOWN,KEYUP]) # Block
@@ -735,7 +735,7 @@ def catchmouseleft():
     if pygame.mouse.get_pressed() == (1,0,0): # If a mouse button is pressed
         (x,y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
         button = "left"
-        #print pygame.mouse.get_pressed()
+        #print(pygame.mouse.get_pressed())
         return x,y,button
     pygame.event.set_allowed() # Re-enable all events
     pygame.event.clear()
@@ -869,7 +869,7 @@ def whatcatchmouse(): # Usage : (xcoord,ycoord,bouton) = catchmouse()
     pygame.event.wait() # Wait for an event
     if pygame.mouse.get_pressed(): # If a mouse button is pressed
         (x,y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
-        #print (x,y); # Print these coordinates on the output
+        #print((x,y)); # Print these coordinates on the output
         button = pygame.mouse.get_pressed()
     #pygame.event.set_allowed() # Re-enable all events
     pygame.event.clear()
