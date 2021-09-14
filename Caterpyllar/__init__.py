@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # Filename: Caterpyllar/__init__.py
 #
@@ -22,28 +22,50 @@ import locale
 import re
 import string
 import pygame
+#from pygame import event
 from pygame.locals import * # events, key names (MOUSEBUTTONDOWN,K_r...)
 import time
 import scipy
 import codecs
 
+
+
 # Initialisation de l'affichage
-black=(0,0,0)
-white=(250,250,250)
-red=(255,0,0)
-green=(0,255,0)
-bgcolor=white
-fgcolor=black
+"""
+In order to let pygame-based function work, we need to program them
+as methods in an object-oriented way (with self. methodology). Because
+we need to define an object (e.g. window.) inside the main script
+and to alter it within Caterpyllar/_init_.py (e.g. by overlaying window.
+with a surface that is defined in the _init_.py Module). Therefore,
+display_2AFC() would be a method that is defined for an object wherever
+it is defined...
+
+I should text it on a simple Module using a simple script.
+"""
+black=(0, 0, 0)
+white=(250, 250, 250)
+red=(255, 0, 0)
+green=(0, 255, 0)
+lightblue = (105, 160, 170)
+
+
+bgcolor=lightblue
+fgcolor=white
 
 #scale=1
 scale=.75
-textsize=int(58*scale)
+textsize=int(120*scale)
 
 largeur_ecran=int(1280*scale)
-#hauteur_ecran=int(4*largeur_ecran/5)
 hauteur_ecran=int(9*largeur_ecran/16)
 
-pygame.mixer.pre_init()
+
+# Decreasing display screen size to speed-up processing
+#largeur_ecran = int(largeur_ecran/2)
+#hauteur_ecran = int(hauteur_ecran/2)
+
+pygame.mixer.pre_init(frequency=44100, size=16, channels=1, buffer=4096)
+pygame.mixer.init()
 pygame.init()
 window = pygame.display.set_mode((largeur_ecran,hauteur_ecran))
 #window = pygame.display.set_mode((largeur_ecran,hauteur_ecran),FULLSCREEN)
@@ -55,12 +77,13 @@ background.fill(bgcolor)
 window.blit(background, (0,0))
 
 
-
+fontchoices = 'arial, comicsans, helvetica'
+selectedFont = pygame.font.match_font(fontchoices)
 
 
 #global largeur_ecran,hauteur_ecran,scale
 
-version = '0.0.3'
+version = '0.0.4'
 
 
 ## General functions
@@ -112,14 +135,14 @@ def uconvert(string):
     return ustring
 
 
-def read_data_2D(filepath, sep, header, dropg = False):
+def read_data_2D(filepath, sep, header=False, dropg = False):
     """ Function to load the contents of a text file into a 2D table using "sep"
     as a column separator. This function returns the content of the
     file into a 2D table (list of lists) which may be accessed by "
     name_of_table[i][j]
     " (where i = line number, j = column number).
 
-    USAGE: x = read_data_2D(filepath=TEXT, sep=TEXT, header=BOOLEAN)
+    USAGE: x = read_data_2D(filepath=TEXT, sep=TEXT, header=BOOLEAN, dropg=BOOLEAN)
 
     EXAMPLE : x = read_data_2D('directory/file.csv',';',1)
     
@@ -128,11 +151,11 @@ def read_data_2D(filepath, sep, header, dropg = False):
     datafile=open(filepath,'r') # Open file for reading
     for line in datafile.readlines(): # For each line in the text file
                                       # This keeps \n at end of line 
-        cleandata = string.replace(line,'\n','') # Remove \n at end of line
+        cleandata = line.replace('\n','') # Remove \n at end of line
                                           # (from string.replace)
         if (dropg == True):
-            cleandata = string.replace(cleandata,'\"','')
-            cleandata = string.replace(cleandata,'\'','')
+            cleandata = cleandata.replace('\"','')
+            cleandata = cleandata.replace('\'','')
         oneline = re.split(sep,cleandata) # Split file at commas
         table.append(oneline) # Append the line at end of table
     datafile.close() # Close the file
@@ -161,7 +184,7 @@ def read_data(filepath, header):
         oneline = re.split(",",cleandata) # Split file at commas
         table.append(oneline) # Append the line at end of table
     datafile.close() # Close the file
-    if header==1:
+    if header==True:
         table = table[1:len(table)]
     else:
         table=table
@@ -184,7 +207,7 @@ def load_data():
 def init_resultsfile(path):
     """ Initializes a file for appending, argument is the filepath"""
     #results = codecs.open(path,'a','utf-8')
-    results = file(path,"a") # a for append (will not overwrite)
+    results = open(path,"a") # a for append (will not overwrite)
     return results
 
 
@@ -274,7 +297,7 @@ def blank_bg(color):
     window.blit(background, (0,0))
     pygame.display.flip()
 
-def blank_screen(color):
+def blank_screen(color=(0,0,0)):
     window.fill(color)
     window.blit(background, (0, 0))
     pygame.display.flip()
@@ -322,8 +345,8 @@ def splash(text):
     #        window.blit(background, (0, 0))
     #        pygame.display.flip()
     #        pygame.time.wait(2000)
-    font = pygame.font.Font(None, int(32*scale)) # Font name and size
-    title = font.render(unicode(text,'utf-8'), 1, fgcolor) # Set text to display, antialiasing and color
+    font = pygame.font.Font(selectedFont, int(32*scale)) # Font name and size
+    title = font.render(text, 1, fgcolor) # Set text to display, antialiasing and color
     titlepos = title.get_rect() # Get surface size information
     titlepos.centerx = background.get_rect().centerx # set x position
     titlepos.centery = background.get_rect().centery # set y position
@@ -337,7 +360,7 @@ def splash(text):
 
 def display_text(text,color): # Display text
     global largeur_ecran,hauteur_ecran,scale
-    font = pygame.font.Font(None, int(46*scale)) # Font name and size
+    font = pygame.font.Font(selectedFont, int(46*scale)) # Font name and size
     text = font.render(text, 1, color) # Set text to display, antialiasing boolean and color
     textpos = text.get_rect() # Get coordinates of the surface needed for text display
     textsize = text.get_size()
@@ -350,7 +373,7 @@ def display_text(text,color): # Display text
     
     
 def whatdisplay_text(text): # Display text
-    font = pygame.font.Font(None, 40*scale) # Font name and size
+    font = pygame.font.Font(selectedFont, 40*scale) # Font name and size
     text = font.render(text, 1, fgcolor) # Set text to
                                                    # display,
                                                    # antialiasing
@@ -371,7 +394,7 @@ def whatdisplay_text(text): # Display text
 
 
 def whatdisplay_text(string):
-        font = pygame.font.Font(None, 46*scale) # set TrueType font to use
+        font = pygame.font.Font(selectedFont, 46*scale) # set TrueType font to use
                                           # (here default) and size
         text = font.render(string, 1, fgcolor) # Set text to display,
                                              # antialiasing and color
@@ -385,11 +408,11 @@ def whatdisplay_text(string):
         pygame.display.flip()
         pygame.time.wait(5000)
 
-def display_text_pos(text,x,y): # Display text
-    global largeur_ecran,hauteur_ecran,scale
+def display_text_pos(text, x, y): # Display text
+    global largeur_ecran, hauteur_ecran, scale
     # Text part initialization
-    font = pygame.font.Font(None, int(46*scale)) # Font name and size
-    text = font.render(unicode(text,'utf-8'), 1, fgcolor) # Set text to
+    font = pygame.font.Font(selectedFont, int(36*scale)) # Font name and size
+    text = font.render(text, 1, fgcolor) # Set text to
                                                    # display,
                                                    # antialiasing
                                                    # boolean and color
@@ -397,18 +420,71 @@ def display_text_pos(text,x,y): # Display text
                               # for text display
     textsize = text.get_size()
     # This part creates "buttons" under the text part
-    xbuttonsize = textsize[0]+10 # Set button x coordinates
-    ybuttonsize = textsize[1]+10 # Set button y coordinates
-    bsurface = pygame.Surface((xbuttonsize,ybuttonsize)) # Create a dedicated surface
-    bsurface.fill(grey) # Fill it with grey
-    bx = x-xbuttonsize/2 # 
-    by = y-ybuttonsize/2
-    window.blit(bsurface, (bx,by))
+    xbuttonsize = textsize[0] + 10 # Set button x coordinates
+    ybuttonsize = textsize[1] + 10 # Set button y coordinates
+    bsurface = pygame.Surface((xbuttonsize+200, ybuttonsize)) # Create a dedicated surface
+    bsurface.fill(bgcolor) # Fill it with grey
+    bx = x - xbuttonsize / 2 # 
+    by = y - ybuttonsize / 2
+    window.blit(bsurface, (bx, by))
     pygame.display.flip()
     textpos.centerx = x # set text x-position
     textpos.centery = y # set text y-position
     # Then we blit text on this
     window.blit(text, textpos) # Blits the text to the coordinates
+
+def display_info_pos(info, x, y): # Display text
+    global largeur_ecran, hauteur_ecran, scale
+    # Text part initialization
+    font = pygame.font.Font(selectedFont, int(46*scale)) # Font name and size
+    text = font.render(info, 1, fgcolor) # Set text to
+                                                   # display,
+                                                   # antialiasing
+                                                   # boolean and color
+    textpos = text.get_rect() # Get coordinates of the surface needed
+                              # for text display
+    textsize = text.get_size()
+    # This part creates "buttons" under the text part
+    xinfosize = textsize[0] + 50 # Set info x coordinates
+    yinfosize = textsize[1] + 50 # Set info y coordinates
+    isurface = pygame.Surface((xinfosize, yinfosize)) # Create a dedicated surface
+    isurface.fill(bgcolor) # Fill it with grey
+    ix = x - xinfosize / 2 # 
+    iy = y - yinfosize / 2
+    window.blit(isurface, (ix, iy))
+    pygame.display.flip()
+    textpos.centerx = x # set text x-position
+    textpos.centery = y # set text y-position
+    # Then we blit text on this
+    window.blit(text, textpos) # Blits the text to the coordinates
+
+
+def display_infoline(info): # Display text
+    global largeur_ecran, hauteur_ecran, scale
+    # Text part initialization
+    font = pygame.font.Font(selectedFont, int(26*scale)) # Font name and size
+    text = font.render(info, 1, bgcolor) # Set text to
+                                                   # display,
+                                                   # antialiasing
+                                                   # boolean and color
+    textpos = text.get_rect() # Get coordinates of the surface needed
+                              # for text display
+    textsize = text.get_size()
+    print(textpos, textsize, info)
+    # This part creates "buttons" under the text part
+    xinfosize = textsize[0] + 50 # Set info x coordinates
+    yinfosize = textsize[1] + 50 # Set info y coordinates
+    isurface = pygame.Surface((largeur_ecran, hauteur_ecran / 10)) # Create a dedicated surface
+    isurface.fill(fgcolor) # Fill it with grey
+    ix = 0 # x - xinfosize / 2 # 
+    iy = 0 #hauteur_ecran - ((hauteur_ecran/10)/2) # y - yinfosize / 2
+    window.blit(isurface, (ix, iy))
+    textpos.centerx = largeur_ecran/2 #isurface.centerx # set text x-position
+    textpos.centery = ((hauteur_ecran/10)/2) # set text y-position
+    # Then we blit text on this
+    window.blit(text, textpos) # Blits the text to the coordinates
+    pygame.display.flip()
+    #pygame.display.flip()
 
 
 
@@ -642,15 +718,17 @@ def catchquit():
     pygame.event.pump()
 #        tic = pygame.time.get_ticks()
 #	toc = tic
-    while 1:#toc-tic < 3000:
+    while True:#toc-tic < 3000:
         #toc = pygame.time.get_ticks()
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_QUIT:
+                if event.key == K_q:
                     sys.exit()
                 else:
                     return
             return
+        #print(event.key)
+        #sys.exit()
     pygame.event.clear()
 
 def waitforspacekey():
@@ -699,6 +777,49 @@ def waitforkeypress():
 
 
 ## Mouse functions
+def catchmouseOrQuit():
+    """ Wait for mouse click and return x,y coordinates and button id in a [x,y,button] list.
+    
+    x and y are scalars.
+    button is a list [1,0,0] = left.
+    
+    QUIT if (x, y) button == (0, 0)
+
+    """
+    done = False
+    quitnow = False
+    pygame.event.set_blocked([MOUSEMOTION,MOUSEBUTTONUP]) # Block
+                                                          # specific
+                                                          # events
+    pygame.event.clear() # Clear the event buffer from the queue
+    pygame.event.pump() # Update the event buffer
+    #pygame.event.set_blocked([MOUSEMOTION,MOUSEBUTTONUP,KEYDOWN,KEYUP]) # Block
+    #pygame.event.wait() # Wait for an event
+    while not done:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                quitnow = True
+                #if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
+                    #sys.exit()
+                    #quitnow = True
+                    #pygame.quit()
+            elif event.type == MOUSEBUTTONDOWN: # If a mouse button is pressed
+                (x, y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
+                print((x,y)); # Print these coordinates on the output
+                button = pygame.mouse.get_pressed()
+                done = True
+    pygame.event.set_allowed([MOUSEMOTION, MOUSEBUTTONUP, KEYUP]) # Block
+    #pygame.event.set_blocked(None) # Re-enable all events
+    pygame.event.clear()
+    if done == True:
+        if (x, y) == (0, 0):
+            pygame.quit()
+        else:
+            return(x, y, button)
+    #elif quitnow == True:
+    #    pygame.quit()
+
+
 
 def catchmouse():
     """ Wait for mouse click and return x,y coordinates and button id in a [x,y,button] list.
@@ -707,21 +828,21 @@ def catchmouse():
     button is a list [1,0,0] = left.
 
     """
-    pygame.event.clear() # Clear the event buffer from the queue
-    pygame.event.pump() # Update the event buffer
-    #pygame.event.set_blocked([MOUSEMOTION,MOUSEBUTTONUP,KEYDOWN,KEYUP]) # Block
     pygame.event.set_blocked([MOUSEMOTION,MOUSEBUTTONUP,KEYDOWN,KEYUP]) # Block
                                                           # specific
                                                           # events
+    pygame.event.clear() # Clear the event buffer from the queue
+    pygame.event.pump() # Update the event buffer
+    #pygame.event.set_blocked([MOUSEMOTION,MOUSEBUTTONUP,KEYDOWN,KEYUP]) # Block
     pygame.event.wait() # Wait for an event
     if pygame.mouse.get_pressed(): # If a mouse button is pressed
         (x,y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
             ##print((x,y)); # Print these coordinates on the output
         button = pygame.mouse.get_pressed()
-        return x,y,button
     pygame.event.set_allowed([MOUSEMOTION,MOUSEBUTTONUP,MOUSEBUTTONDOWN,KEYDOWN,KEYUP]) # Block
     #pygame.event.set_blocked(None) # Re-enable all events
     pygame.event.clear()
+    return(x,y,button)
 
 
 def catchmouseleft():
@@ -736,9 +857,9 @@ def catchmouseleft():
         (x,y) = pygame.mouse.get_pos() # Get the current coordinates of the mouse
         button = "left"
         #print(pygame.mouse.get_pressed())
-        return x,y,button
     pygame.event.set_allowed() # Re-enable all events
     pygame.event.clear()
+    return(x,y,button)
 
 
 
@@ -840,7 +961,7 @@ def whatload_data():
 
 
 def place_texte_xy(string,size,x,y): # Usage : place_texte_xy('texte',32,200,300)
-    font = pygame.font.Font(None, int(size*scale))
+    font = pygame.font.Font(selectedFont, int(size*scale))
     text = font.render(string, 1, fgcolor)
     textpos = text.get_rect()
     textsize = text.get_size()
