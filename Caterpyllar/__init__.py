@@ -981,7 +981,7 @@ def whatpause(ms):
     pygame.time.delay(ms)
 
 def quitthegame():
-	sys.exit('\ninterrupted by the user !!!')
+	sys.exit('\nThe experiment was interrupted by the user !!!')
 
 def whatcatchmouse(): # Usage : (xcoord,ycoord,bouton) = catchmouse()
     pygame.event.clear() # Clear the event buffer from the queue
